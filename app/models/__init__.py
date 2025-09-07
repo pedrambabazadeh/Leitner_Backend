@@ -1,2 +1,1 @@
-# app/models/__init__.py
-from .core import Translations, Words
+from .core import Word, Translation, Verb, WordTranslation, Noun, PrepositionObject, WordObjectPreposition, Example, ExampleTranslation, WordExample
