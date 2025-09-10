@@ -1,4 +1,5 @@
 from app.extensions import db
+from sqlalchemy.orm import joinedload
 from app.models import Word, Verb, Noun, WordTranslation, Translation, WordExample, Example
 
 class WordService:
@@ -46,7 +47,39 @@ class WordService:
         return word
 
     def get_words_by_category(self, category):
-        return Word.query.filter_by(category=category).all()
+        words = (
+            Word.query
+            .options(
+                joinedload(Word.translations).joinedload(WordTranslation.translation),
+                joinedload(Word.examples).joinedload(WordExample.example),
+            )
+            .filter_by(category=category)
+            .all()
+        )
+
+        result = []
+        for w in words:
+            result.append({
+                "id": w.id,
+                "title": w.title,
+                "category": w.category,
+                "translations": [
+                    {
+                        "id": wt.translation.id,
+                        "language": wt.translation.language,
+                        "text": wt.translation.text
+                    }
+                    for wt in w.translations
+                ],
+                "examples": [
+                    {
+                        "id": we.example.id,
+                        "title": we.example.title
+                    }
+                    for we in w.examples
+                ]
+            })
+        return result
 
     def search_words(self, entry_letters):
         return Word.query.filter(Word.title.like(f"{entry_letters}%")).all()

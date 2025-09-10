@@ -21,7 +21,7 @@ def add_word():
 @bp.route("/category/<category>", methods=["GET"])
 def get_by_category(category):
     words = service.get_words_by_category(category)
-    return jsonify([{"id": w.id, "title": w.title} for w in words])
+    return jsonify(words)
 
 # Search words by starting letters (GET)
 @bp.route("/search", methods=["GET"])
