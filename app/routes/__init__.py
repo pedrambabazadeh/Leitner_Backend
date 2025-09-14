@@ -1,4 +1,5 @@
 from .word_routes import bp as word_bp
+from .auth_routes import auth_bp as auth_bp
 
 # If you have multiple blueprints, you can group them here
-__all__ = ["word_bp"]
+__all__ = ["word_bp", "auth_bp"]

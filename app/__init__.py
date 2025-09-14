@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
-from app.extensions import db, migrate
+from app.extensions import db, migrate, jwt
 from app.config import Config
 from .routes import word_bp
 import os
@@ -23,8 +23,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     app.register_blueprint(word_bp)
-
-    #app.register_blueprint(word_bp)
+    jwt.init_app(app)
 
     @app.route('/api/test', methods=['GET'])
     def test_api():
