@@ -79,7 +79,7 @@ class PrepositionObject(db.Model):
     object = db.Column(db.String(191), nullable=True)
 
 
-# 7. WORDS_OBJECT_PREPOSITIONS TABLE
+# 7. WORDS_OBJECT_PREPOSITIONS TAB
 class WordObjectPreposition(db.Model):
     __tablename__ = 'word_object_prepositions'
 
@@ -139,3 +139,13 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+    role = db.relationship('Role', back_populates='users')
+
+class Roles(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
+
+    user = db.relationship('User', back_populates='roles')
