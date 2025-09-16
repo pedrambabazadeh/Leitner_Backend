@@ -10,7 +10,7 @@ from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
 from app.extensions import db, migrate, jwt
 from app.config import Config
-from .routes import word_bp
+from .routes import word_bp, auth_bp
 import os
 
 #read after DB first api carefully to initialize routes file and reform directory etc.
@@ -23,6 +23,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     app.register_blueprint(word_bp)
+    app.register_blueprint(auth_bp)
     jwt.init_app(app)
 
     @app.route('/api/test', methods=['GET'])
