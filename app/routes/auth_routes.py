@@ -38,15 +38,17 @@ def login():
     user = User.query.filter_by(email=email).first()
     if not user or not check_password_hash(user.password_hash, password):
         return jsonify({'message': 'Invalid password'}), 401
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
     resp = jsonify({'message': 'user logged in'})
     set_access_cookies(resp, access_token)
     return resp, 200
-@auth_bp.route('/me', methods=['GET'])
+@auth_bp.route('/me', methods=['POST'])
 @jwt_required()
 def me():
+    #print("🔍 Incoming cookies:", request.cookies)
+    #print("🔍 JWT Identity:", get_jwt_identity())
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = User.query.get(int(user_id))
     if not user:
         return jsonify({'message': 'user not found'}), 404
     return jsonify({'id': user.id, 'email': user.email, 'name': user.name, 'last_name': user.last_name})
