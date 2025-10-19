@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies, current_user
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, set_access_cookies, unset_jwt_cookies, create_refresh_token, set_refresh_cookies, current_user
 
 from ..extensions import db
 from ..models import User
@@ -39,9 +39,12 @@ def login():
     if not user or not check_password_hash(user.password_hash, password):
         return jsonify({'message': 'Invalid password'}), 401
     access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
     resp = jsonify({'message': 'user logged in'})
     set_access_cookies(resp, access_token)
+    set_refresh_cookies(resp, refresh_token)
     return resp, 200
+
 @auth_bp.route('/me', methods=['POST'])
 @jwt_required()
 def me():
@@ -58,3 +61,12 @@ def logout():
     resp = jsonify({'message': 'user logged out'})
     unset_jwt_cookies(resp)
     return resp
+
+@auth_bp.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    current_user = get_jwt_identity()
+    new_access_token = create_access_token(identity=current_user)
+    resp = jsonify({'message': 'Access token refreshed'})
+    set_access_cookies(resp, new_access_token)
+    return resp, 200
