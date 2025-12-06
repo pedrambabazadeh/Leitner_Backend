@@ -48,8 +48,6 @@ def login():
 @auth_bp.route('/me', methods=['POST'])
 @jwt_required()
 def me():
-    #print("🔍 Incoming cookies:", request.cookies)
-    #print("🔍 JWT Identity:", get_jwt_identity())
     user_id = get_jwt_identity()
     user = User.query.get(int(user_id))
     if not user:

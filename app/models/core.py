@@ -148,7 +148,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(255), nullable=False)
 
-    user = db.relationship('User', back_populates='roles')"""
+    user = db.relationship('User', back_populates='roles')
 
 class UserDictionary(db.Model):
     __tablename__ = 'user_dictionary'
@@ -157,5 +157,5 @@ class UserDictionary(db.Model):
     word_id = db.Column(db.Integer, db.ForeignKey('words.id'), nullable=False)
     is_in_leitnerbox = db.Column(db.Boolean, default=True)
     user_notes = db.Column(db.String(255), nullable=False)
-    user = db.relationship('User', back_populates='dictionary')
-    word = db.relationship('Word', back_populates='dictionary')
+    user = db.relationship('User', back_populates='word')
+    word = db.relationship('Word', back_populates='user')"""
