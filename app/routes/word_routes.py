@@ -29,3 +29,11 @@ def search_words():
     entry = request.args.get("entry")
     words = service.search_words(entry)
     return jsonify([{"id": w.id, "title": w.title} for w in words])
+
+@bp.get("/<string:word>")  #added and tested. it is working
+def get_word(word):
+    searched = word.lower()
+    words = service.search_words(searched)
+    if len(words) == 0:
+        return jsonify({"error": f"Word '{searched}' not found"}), 404
+    return jsonify({"title": words[0].title})
